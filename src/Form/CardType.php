@@ -9,6 +9,7 @@ use App\Repository\TypeRepository;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,12 +25,9 @@ class CardType extends AbstractType
             ->add('description')
             ->add('type', EntityType::class, [
                 'class' => Type::class,
-                'query_builder' => function (TypeRepository $typeRepository) {
-                    return $typeRepository->createQueryBuilder('t')
-                        ->orderBy('t.name', 'ASC');
-                },
                 'choice_label' => 'name',
             ])
+            ->add('save', SubmitType::class, ['label' => 'Create Card'])
         ;
     }
 

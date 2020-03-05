@@ -15,17 +15,15 @@ class CardController extends AbstractController
      /**
      * @Route("/card", name="card")
      */
-    public function new(Request $request)
+    public function newCard(Request $request)
     {
         $card = new Card();
-
         $form = $this->createForm(CardType::class, $card);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $this->getUser();
-
             $card = $form->getData();
             $card->setUser($user);
 
@@ -36,8 +34,8 @@ class CardController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('card/index.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('home/form.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 
@@ -46,9 +44,8 @@ class CardController extends AbstractController
      */
     public function newType(Request $request)
     {
-        $card = new Type();
-
-        $form = $this->createForm(TypeType::class, $card);
+        $type = new Type();
+        $form = $this->createForm(TypeType::class, $type);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -62,7 +59,7 @@ class CardController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('card/type.html.twig', [
+        return $this->render('home/form.html.twig', [
             'form' => $form->createView(),
         ]);
     }
