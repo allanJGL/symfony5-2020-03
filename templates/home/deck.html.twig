@@ -3,72 +3,87 @@
 {% block title %}Deck!{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" style="width: 90% !important;">
         <div class="row">
-            {% for card in cards %}
-                <div class="card" id="{{ card.name }}">
-                    <div class="cardHeader">
-                        <span><strong>{{ card.name }}</strong></span>
-                        <span>{{ card.type.name }}</span>
-                    </div>
-                    <div class="cardImage" style="
-                            background: url({{ asset('uploads/images/' ~ card.image) }});
-                            background-repeat: no-repeat;
-                            background-size: cover;
-                            background-position: center center;">
-                    </div>
-                    <span>{{ card.description }}</span>
-                    <div class="cardFooter">
-                        <div class="cardNumber" style="color:blue">{{ card.mana }}</div>
-                        <div class="cardNumber" style="color:red">{{ card.attack }}</div>
-                        <div class="cardNumber" style="color:green">{{ card.health }}</div>
-                    </div>
+            <div class="col-10">
+                <div class="row" style="width: 100% !important;">
+                    {% for card in cards %}
+                        <div class="card clickable" id="{{ card.name }}">
+                            <div class="cardHeader">
+                                <span><strong>{{ card.name }}</strong></span>
+                                <span>{{ card.type.name }}</span>
+                            </div>
+                            <div class="cardImage" style="
+                                    background: url({{ asset('uploads/images/' ~ card.image) }});
+                                    background-repeat: no-repeat;
+                                    background-size: cover;
+                                    background-position: center center;">
+                            </div>
+                            <span>{{ card.description }}</span>
+                            <div class="cardFooter">
+                                <div class="cardNumber" style="color:blue">{{ card.mana }}</div>
+                                <div class="cardNumber" style="color:red">{{ card.attack }}</div>
+                                <div class="cardNumber" style="color:green">{{ card.health }}</div>
+                            </div>
+                            <a href="saveCardDeck" id="{{ card.id }}"></a>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
+            <div class="col-2">
+                <h2>Deck Name</h2>
+                <input type="text" id="deckName" placeholder="Enter Deck Name">
+                <ul id="selectedCardList"></ul>
+                <button id="submit">Save Deck</button>
+            </div>
         </div>
     </div>
-    <div class="">
-        <ul id="selectedCardList">
 
-        </ul>
-    </div>
 
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('card').click(function (e) {
-                let idCard = e.target.id;
-                console.log(idCard);
+            $('.clickable').click(function (e) {
                 e.preventDefault();
+                var idCard = $(this).find("a").attr("id");
+                var nameCard = $(this).attr("id");
                 $.ajax({
                     type: "POST",
                     url: 'saveCardDeck',
                     data: {idCard: idCard},
-                    success: function success(data) {
-                        console.log(data);
-                        var item = document.createElement('li');
-                        var text = document.createTextNode(data);
-                        item.appendChild(text);
-                        $("#selectedCardList").append(item);
+                    success: function success() {
+                        var text = document.createTextNode(nameCard);
+                        $(document.createElement('li'))
+                            .addClass("cardlist")
+                            .attr({id: idCard})
+                            .appendTo("#selectedCardList")
+                            .click(function () {
+                                    $(this).remove();
+                                })
+                            .append(text)
+                        ;
                     }
                 });
             });
+
+            $('#submit').click(function (e) {
+                let deckList = [];
+                $( ".cardlist" ).each(function( index ) {
+                    deckList.push($(this).attr('id'));
+                });
+                console.log(deckList, $("#deckName").val());
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: 'saveDeck',
+                    data: {deckList: deckList, deckName: $("#deckName").val()},
+                    success: function success(response) {
+                        $("#pageContent").load($('.active').attr('href'));
+                    }
+                });
+            });
+
         });
 
-        function addCard(idCard) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: 'saveCardDeck',
-                data: {idCard: idCard},
-                success: function success(data) {
-                    console.log(data);
-                    var item = document.createElement('li');
-                    var text = document.createTextNode(data);
-                    item.appendChild(text);
-                    $("#selectedCardList").append(item);
-                }
-            });
-        }
     </script>
 {% endblock %}

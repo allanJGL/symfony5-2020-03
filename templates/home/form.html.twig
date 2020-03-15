@@ -3,51 +3,50 @@
 {% block title %}Hello CardController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper {
-        margin: 1em auto;
-        max-width: 800px;
-        width: 95%;
-        font: 18px/1.5 sans-serif;
-    }
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
 
-    .example-wrapper code {
-        background: #F5F5F5;
-        padding: 2px 6px;
-    }
-</style>
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
+    </style>
 
-<div class="example-wrapper">
-    {{ form_start(form, {'action': path(app.request.attributes.get('_route')), 'method': 'POST', 'enctype':'multipart/form.data' }) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
-</div>
+    <div class="example-wrapper">
+        {{ form_start(form, {'action': path(app.request.attributes.get('_route')), 'method': 'POST', 'enctype':'multipart/form.data' }) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('span a').click(function (e) {
+                e.preventDefault();
+                $('span a').removeClass('active');
+                $(this).addClass('active');
+                $("#pageContent").load($(this).attr('href'));
+            });
+        });
 
-
-    $(document).ready(function () {
-        $('span a').click(function (e) {
+        $('#pageContent').on('submit', 'form', function (e) {
             e.preventDefault();
-            $('span a').removeClass('active');
-            $(this).addClass('active');
-            $("#pageContent").load($(this).attr('href'));
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function success(response) {
+                    $("#pageContent").load($('.active').attr('href'));
+                }
+            });
         });
-    });
-    $('#pageContent').on('submit', 'form', function (e) {
-        e.preventDefault();
-        var form = $(this);
-        $.ajax({
-            type: "POST",
-            url: form.attr('action'),
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            success: function success(response) {
-                $("#pageContent").load($('.active').attr('href'));
-            }
-        });
-    });
-    {% endblock %}
-
+    </script>
+{% endblock %}
 

@@ -5,6 +5,7 @@
         "php": "^7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
         "friendsofsymfony/jsrouting-bundle": "^2.5",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "5.0.*",
@@ -28,8 +29,9 @@
         "symfony/twig-pack": "*",
         "symfony/validator": "5.0.*",
         "symfony/web-link": "5.0.*",
-        "symfony/yaml": "5.0.*",
-      "ext-intl": "*"
+        "symfony/webpack-encore-bundle": "^1.7",
+        "symfony/webpack-encore-pack": "^1.0",
+        "symfony/yaml": "5.0.*"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

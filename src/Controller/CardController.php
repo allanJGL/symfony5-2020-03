@@ -29,18 +29,16 @@ class CardController extends AbstractController
 
             if ($image) {
                 $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
 
                 try {
                     $image->move(
                         $this->getParameter('images'),
-                        $newFilename
+                        $originalFilename
                     );
                 } catch (FileException $e) {
                 }
 
-                $card->setImage($newFilename);
+                $card->setImage($originalFilename);
             } else {
                 $card->setImage(
                     new File($this->getParameter('images').'/'.$card->getBrochureFilename())
@@ -108,10 +106,12 @@ class CardController extends AbstractController
     {
         $idCard = $request->request->get("idCard");
         $entityManager = $this->getDoctrine()->getManager();
+        $cards = $entityManager->getRepository(Card::class)->findAll();
         $card = $entityManager->getRepository(Card::class)->find($idCard);
 
         return $this->render('home/listCards.html.twig', [
             'card' => $card,
+            'cards' => $cards,
         ]);
     }
 }

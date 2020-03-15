@@ -71,16 +71,43 @@ class DeckController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
-     * @Route("/test", name="test")
+     * @Route("/newDeck", name="newDeck")
      */
-    public function test(Request $request)
+    public function newDeck()
     {
         $entityManager = $this->getDoctrine()->getManager();
         $cards = $entityManager->getRepository(Card::class)->findAll();
 
         return $this->render('home/deck.html.twig', [
             'cards' => $cards,
+        ]);
+    }
+
+    /**
+     * @Route("/saveDeck", name="saveDeck")
+     */
+    public function saveDeck(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $deckListId = $request->request->get("deckList");
+        $deckName = $request->request->get("deckName");
+        $deck = new Deck();
+        foreach ($deckListId as $cardId) {
+            $card = $entityManager->getRepository(Card::class)->find($cardId);
+            $deck->addCard($card);
+        }
+
+        $deck->setName($deckName);
+
+        $entityManager->persist($deck);
+        $entityManager->flush();
+
+        $decks = $entityManager->getRepository(Deck::class)->findAll();
+
+        return $this->render('home/listDecks.html.twig', [
+            'decks' => $decks,
         ]);
     }
 
