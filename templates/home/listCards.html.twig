@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            {% for card in cards %}
+                <div class="card">
+                    <div class="cardHeader">
+                        <span><strong>{{ card.name }}</strong></span>
+                        <span>{{ card.type.name }}</span>
+                    </div>
+                    <div class="cardImage" style="
+                            background: url({{ asset('uploads/images/' ~ card.image) }});
+                            background-repeat: no-repeat;
+                            background-size: cover;
+                            background-position: center center;">
+                    </div>
+                    <span>{{ card.description }}</span>
+                    <div class="cardFooter">
+                        <div class="cardNumber" style="color:blue">{{ card.mana }}</div>
+                        <div class="cardNumber" style="color:red">{{ card.attack }}</div>
+                        <div class="cardNumber" style="color:green">{{ card.health }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

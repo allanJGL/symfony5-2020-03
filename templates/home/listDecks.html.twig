@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            {% for deck in decks %}
+                <span><a href="{{ path('editDeck', {deckId: deck.id}) }}">{{ deck.name }}</a></span>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

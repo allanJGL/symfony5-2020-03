@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Deck!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% for card in cards %}
+                <div class="card" id="{{ card.name }}">
+                    <div class="cardHeader">
+                        <span><strong>{{ card.name }}</strong></span>
+                        <span>{{ card.type.name }}</span>
+                    </div>
+                    <div class="cardImage" style="
+                            background: url({{ asset('uploads/images/' ~ card.image) }});
+                            background-repeat: no-repeat;
+                            background-size: cover;
+                            background-position: center center;">
+                    </div>
+                    <span>{{ card.description }}</span>
+                    <div class="cardFooter">
+                        <div class="cardNumber" style="color:blue">{{ card.mana }}</div>
+                        <div class="cardNumber" style="color:red">{{ card.attack }}</div>
+                        <div class="cardNumber" style="color:green">{{ card.health }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="">
+        <ul id="selectedCardList">
+
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('card').click(function (e) {
+                let idCard = e.target.id;
+                console.log(idCard);
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: 'saveCardDeck',
+                    data: {idCard: idCard},
+                    success: function success(data) {
+                        console.log(data);
+                        var item = document.createElement('li');
+                        var text = document.createTextNode(data);
+                        item.appendChild(text);
+                        $("#selectedCardList").append(item);
+                    }
+                });
+            });
+        });
+
+        function addCard(idCard) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: 'saveCardDeck',
+                data: {idCard: idCard},
+                success: function success(data) {
+                    console.log(data);
+                    var item = document.createElement('li');
+                    var text = document.createTextNode(data);
+                    item.appendChild(text);
+                    $("#selectedCardList").append(item);
+                }
+            });
+        }
+    </script>
+{% endblock %}
