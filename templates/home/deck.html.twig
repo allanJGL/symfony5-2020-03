@@ -32,8 +32,18 @@
             </div>
             <div class="col-2">
                 <h2>Deck Name</h2>
-                <input type="text" id="deckName" placeholder="Enter Deck Name">
-                <ul id="selectedCardList"></ul>
+                <input type="text" id="deckName"
+                       placeholder="Enter Deck Name" {% if name is defined %} value="{{ name }}" {% endif %}>
+                {% if deckId is defined %}
+                    <input type="hidden" id="deckId" value="{{ deckId }}">
+                {% endif %}
+                <ul id="selectedCardList">
+                    {% if list is defined %}
+                        {% for card in list %}
+                            <li class="cardlist" id="{{ card.id }}" click="remove()">{{ card.name }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
                 <button id="submit">Save Deck</button>
             </div>
         </div>
@@ -58,8 +68,8 @@
                             .attr({id: idCard})
                             .appendTo("#selectedCardList")
                             .click(function () {
-                                    $(this).remove();
-                                })
+                                $(this).remove();
+                            })
                             .append(text)
                         ;
                     }
@@ -68,7 +78,12 @@
 
             $('#submit').click(function (e) {
                 let deckList = [];
-                $( ".cardlist" ).each(function( index ) {
+                let deckId = 0;
+                if ($("#deckId").length) {
+                    deckId = $("#deckId").val();
+                    console.log(deckId);
+                }
+                $(".cardlist").each(function (index) {
                     deckList.push($(this).attr('id'));
                 });
                 console.log(deckList, $("#deckName").val());
@@ -76,13 +91,16 @@
                 $.ajax({
                     type: "POST",
                     url: 'saveDeck',
-                    data: {deckList: deckList, deckName: $("#deckName").val()},
+                    data: {deckList: deckList, deckName: $("#deckName").val(), deckId},
                     success: function success(response) {
                         $("#pageContent").load($('.active').attr('href'));
                     }
                 });
             });
 
+            function remove() {
+                $(this).remove();
+            }
         });
 
     </script>

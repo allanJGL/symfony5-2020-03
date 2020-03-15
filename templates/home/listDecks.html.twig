@@ -14,6 +14,19 @@
             {% endfor %}
         </div>
     </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('span a').click(function (e) {
+                e.preventDefault();
+                $('nav a').removeClass('active');
+                $(this).addClass('active');
+                $("#pageContent").load($(this).attr('href'));
+            });
+        });
+
+    </script>
 {% endblock %}
 </body>
 </html>

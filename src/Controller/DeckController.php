@@ -58,17 +58,15 @@ class DeckController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $deck = $entityManager->getRepository(Deck::class)->find($deckId);
+        $decklist = $deck->getCards();
+        $deckName = $deck->getName();
+        $cards = $entityManager->getRepository(Card::class)->findAll();
 
-        $form = $this->createForm(DeckType::class, $deck);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            return $this->redirectToRoute('home');
-        }
-
-        return $this->render('home/form.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('home/deck.html.twig', [
+            'deckId' => $deckId,
+            'name' => $deckName,
+            'list' => $decklist,
+            'cards' => $cards,
         ]);
     }
 
@@ -93,13 +91,23 @@ class DeckController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $deckListId = $request->request->get("deckList");
         $deckName = $request->request->get("deckName");
-        $deck = new Deck();
+        $deckId = $request->request->get("deckId");
+        $repo = $entityManager->getRepository(Deck::class);
+
+        if ($deckId === 0) {
+            $deck = new Deck();
+        } else {
+            $deck = $repo->find($deckId);
+            dump($deckId);
+        }
+
+
+        $deck->setName($deckName);
+
         foreach ($deckListId as $cardId) {
             $card = $entityManager->getRepository(Card::class)->find($cardId);
             $deck->addCard($card);
         }
-
-        $deck->setName($deckName);
 
         $entityManager->persist($deck);
         $entityManager->flush();
